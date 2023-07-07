@@ -1,7 +1,7 @@
 package entities.vertices;
 
 import entities.EdgeDirectorToMovie;
-import entities.EdgeGenreToMovie;
+//import entities.EdgeGenreToMovie;
 
 import java.util.ArrayList;
 
@@ -18,13 +18,15 @@ public class Director {
         this.moviesEdges.add(new EdgeDirectorToMovie(this, endMovie));
     }
 
+    public void printMovies(){
+        for(EdgeDirectorToMovie e: this.moviesEdges) {
+            System.out.println(" -> " + e.getEnd().getTitle() + ": " + e.getEnd().getGenre() + " | " +
+            Integer.toString(e.getEnd().getYear()));
+        }
+    }
+
     public String getName() {
         return this.name;
     }
 
-    public void printMovies(){
-        for(EdgeDirectorToMovie e: this.moviesEdges) {
-            System.out.println(" -> " + e.getEnd().getTitle());
-        }
-    }
 }

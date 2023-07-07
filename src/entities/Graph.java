@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public class Graph {
 
-    private  ArrayList<Movie> movies;
+    private ArrayList<Movie> movies;
     private ArrayList<Genre> genres;
     private ArrayList<Director> directors;
     private boolean isDirected;
@@ -75,13 +75,23 @@ public class Graph {
         }
     }
 
-    public void createEdgesByDirector(Director director){
-        for (Movie m: movies){
-            if (Objects.equals(m.getGenre().toLowerCase(), director.getName().toLowerCase())) {
-                addEdgeDirector(director, m);
+    public Movie getMovieByDirector(String name) {
+        for(Movie m: movies) {
+            if (Objects.equals(m.getDirector(), name)) {
+                return m;
+            }
+        }
+        return null;
+    }
+
+    public void createEdgesByDirector(Director director) {
+        for (Movie movie : movies) {
+            if (Objects.equals(movie.getDirector().toLowerCase(), director.getName().toLowerCase())) {
+                addEdgeDirector(director, movie);
             }
         }
     }
+    
 
     public void printMoviesByDecade(ArrayList<Movie> movies, int startYear) {
         int endYear = startYear + 9;
