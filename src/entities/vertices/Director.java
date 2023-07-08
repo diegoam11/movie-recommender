@@ -21,11 +21,14 @@ public class Director {
     }
 
     public HashMap<String, EdgeDirectorToMovie> getMoviesEdges() {
-        return moviesEdges;
+        return this.moviesEdges;
     }
 
     public String getName() {
         return this.name;
+    }
+    public int getPopularity() {
+        return this.popularity;
     }
 
     public void setPopularity() {

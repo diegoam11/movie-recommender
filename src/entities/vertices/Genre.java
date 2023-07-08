@@ -27,6 +27,9 @@ public class Genre {
     public String getGenre() {
         return this.genre;
     }
+    public int getPopularity() {
+        return this.popularity;
+    }
 
     public void setPopularity() {
         this.popularity += 1;

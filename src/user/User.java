@@ -15,6 +15,8 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+        this.favoriteMovies = new Stack<>();
+        this.watchlist = new LinkedList<>();
     }
 
     public String getUsername() {
@@ -37,5 +39,8 @@ public class User {
 
     public void addToWatchlist(Movie movie) {
         watchlist.offer(movie);
+    }
+    public Queue<Movie> getWatchlist(){
+        return watchlist;
     }
 }

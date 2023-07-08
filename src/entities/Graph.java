@@ -67,14 +67,22 @@ public class Graph {
         Genre genre = getGenre(genreName);
         for(EdgeGenreToMovie e: genre.getMoviesEdges().values()){
             System.out.println(" -> " + e.getEnd().getTitle() + ": " + e.getEnd().getGenre() + " | " +
-                    e.getEnd().getYear() + " | " + e.getEnd().getDirector());
+                    e.getEnd().getYear() + " | " + e.getEnd().getDirector() + " | " + e.getEnd().getPopularity());
         }
     }
     public void printMoviesByDirector(String directorName) {
         Director director = getDirector(directorName);
         for(EdgeDirectorToMovie e: director.getMoviesEdges().values()){
             System.out.println(" -> " + e.getEnd().getTitle() + ": " + e.getEnd().getGenre() + " | " +
-                    e.getEnd().getYear() + " | " + e.getEnd().getDirector());
+                    e.getEnd().getYear() + " | " + e.getEnd().getDirector()  + " | "+ e.getEnd().getPopularity());
+        }
+    }
+
+    public void printAllMovies() {
+        for (HashMap.Entry<String, Movie> entry : this.movies.entrySet()) {
+            String key = entry.getKey();
+            Movie movie = entry.getValue();
+            System.out.println(key + ": " + movie.getString());
         }
     }
 
@@ -105,26 +113,26 @@ public class Graph {
             }
         }
     }
-    public static void recommender(Queue<Movie> queue, Graph graph) {
+    public void recommender(Queue<Movie> queue, Graph graph) {
         for (Movie movie : queue) {
             String directorName = movie.getDirector();
             String genreName = movie.getGenre();
 
-            HashMap<String, Genre> moviesFromGenre = graph.getGenres();
-            HashMap<String, EdgeGenreToMovie> movies =  moviesFromGenre.get(genreName).getMoviesEdges();
+            HashMap<String, Genre> genresToMovies = graph.getGenres();
+            HashMap<String, Director> directorsToMovies = graph.getDirectors();
 
-            HashMap<String, Director> moviesFromDirector = graph.getDirectors();
-            HashMap<String, EdgeDirectorToMovie> directors =  moviesFromDirector.get(directorName).getMoviesEdges();
-
-            if(movies.get(genreName) != null){
-                movies.get(genreName).getStart().setPopularity();
+            if(genresToMovies.get(genreName) != null){
+                genresToMovies.get(genreName).setPopularity();
+                System.out.println(genresToMovies.get(genreName).getGenre());
+                System.out.println(genresToMovies.get(genreName).getPopularity());
             }
 
-            if(directors.get(directorName) != null){
-                directors.get(directorName).getStart().setPopularity();
+            if(directorsToMovies.get(directorName) != null){
+                directorsToMovies.get(directorName).setPopularity();
+                System.out.println(directorsToMovies.get(directorName).getName());
+                System.out.println(directorsToMovies.get(directorName).getPopularity());
             }
         }
     }
-
 }
 

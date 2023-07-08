@@ -8,10 +8,10 @@ public class Movie {
     private String director;
     private  int popularity;
     public Movie(String title, String genre, int year, String director ) {
-        this.title = title;
-        this.genre = genre;
+        this.title = title.toLowerCase();
+        this.genre = genre.toLowerCase();
         this.year = year;
-        this.director = director;
+        this.director = director.toLowerCase();
     }
 
     public String getTitle() {
@@ -29,6 +29,6 @@ public class Movie {
     public int getPopularity() {return popularity;}
 
     public String getString(){
-        return "-> " + this.title + ": " + this.genre + " | " + Integer.toString(this.year) + " | " + this.director;
+        return "-> " + this.title + ": " + this.genre + " | " + Integer.toString(this.year) + " | " + this.director + " | " + this.popularity;
     }
 }

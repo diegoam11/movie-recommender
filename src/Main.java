@@ -1,3 +1,5 @@
+import algorithms.HeapSort;
+import algorithms.Quicksort;
 import entities.vertices.Director;
 import entities.vertices.Genre;
 import entities.vertices.Movie;
@@ -122,8 +124,17 @@ public class Main {
             if (option == 1) {
                 subMenu(scanner, graph);
             } else if (option == 2) {
+                Movie m1 = new Movie("prueba1", "Drama", 1968, "David Fincher");
+                Movie m2 = new Movie("prueba2", "Horror", 1960, "Christopher Nolan");
+                Movie m3 = new Movie("prueba3", "Horror", 1978, "Martin Scorsese");
+                Movie m4 = new Movie("prueba4", "Crime", 1978, "David Fincher");
 
-                break;
+                currentUser.addToWatchlist(m1);
+                currentUser.addToWatchlist(m2);
+                currentUser.addToWatchlist(m3);
+                currentUser.addToWatchlist(m4);
+
+                graph.recommender(currentUser.getWatchlist(), graph);
             } else if (option == 3) {
                 System.out.println("No yet..");
                 break;
@@ -161,18 +172,16 @@ public class Main {
             scanner.nextLine();
 
             if (opt == 1) {
-                /*
-                ArrayList<Movie> movies = graph.getMovies();
-                MovieSorter.sortByYear(movies);
-                for (Movie m: movies){
-                    System.out.println(m.getString());
-                }*/
+                graph.printAllMovies();
                 waitForEnter(scanner);
                 break;
             } else if (opt == 2) {
                 System.out.print("Genre: ");
                 String genre = scanner.nextLine();
                 graph.printMoviesByGenre(genre);
+                System.out.println("********************");
+                System.out.println(graph.getGenres().get("horror").getGenre() + " " + graph.getGenres().get("horror").getPopularity());
+
                 waitForEnter(scanner);
                 break;
             } else if (opt == 3) {
@@ -218,30 +227,6 @@ public class Main {
     public static void waitForEnter(Scanner scanner) {
         System.out.println("Press Enter to continue...");
         scanner.nextLine();
-    }
-    public static void saveMovies(HashMap<String, Movie> movies){
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(movies);
-        try (FileWriter fileWriter = new FileWriter("src/persistance/movies.json")) {
-            fileWriter.write(json);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static String leerJson() {
-        try (FileReader reader = new FileReader("src/persistance/movies.json")) {
-            StringBuilder content = new StringBuilder();
-            int caracter;
-            while ((caracter = reader.read()) != -1) {
-                content.append((char) caracter);
-            }
-            return content.toString();
-        } catch (IOException e) {
-            System.out.println("Error");
-            e.printStackTrace();
-            return "";
-        }
     }
 
     private static void loadMovies(){
