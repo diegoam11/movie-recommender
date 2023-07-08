@@ -26,7 +26,10 @@ public class Movie {
     public String getDirector() {
         return this.director;
     }
-    public int getPopularity() {return popularity;}
+    public int getPopularity() {return this.popularity;}
+    public void setPopularity() {
+        this.popularity += 1;
+    }
 
     public String getString(){
         return "-> " + this.title + ": " + this.genre + " | " + Integer.toString(this.year) + " | " + this.director + " | " + this.popularity;

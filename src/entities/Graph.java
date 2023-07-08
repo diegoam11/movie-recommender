@@ -6,6 +6,7 @@ import entities.vertices.Genre;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Queue;
 
 public class Graph {
@@ -109,11 +110,12 @@ public class Graph {
 
         for (Movie movie : movies) {
             if (movie.getYear() >= startYear && movie.getYear() <= endYear) {
-                System.out.println(movie.getTitle());
+                System.out.println(movie.getString());
             }
         }
     }
     public void recommender(Queue<Movie> queue, Graph graph) {
+        HashMap<String, Movie> movies = graph.getMovies();
         for (Movie movie : queue) {
             String directorName = movie.getDirector();
             String genreName = movie.getGenre();
@@ -123,16 +125,37 @@ public class Graph {
 
             if(genresToMovies.get(genreName) != null){
                 genresToMovies.get(genreName).setPopularity();
-                System.out.println(genresToMovies.get(genreName).getGenre());
-                System.out.println(genresToMovies.get(genreName).getPopularity());
             }
 
             if(directorsToMovies.get(directorName) != null){
                 directorsToMovies.get(directorName).setPopularity();
-                System.out.println(directorsToMovies.get(directorName).getName());
-                System.out.println(directorsToMovies.get(directorName).getPopularity());
             }
+
+            if(genresToMovies.get(genreName) != null && directorsToMovies.get(directorName) != null){
+                for (Movie m : movies.values()) {
+                    if (directorsToMovies.get(directorName).getMoviesEdges().get(m.getTitle()) != null &&
+                            genresToMovies.get(genreName).getMoviesEdges().get(m.getTitle()) != null
+                    ){
+                        if (directorsToMovies.get(directorName).getMoviesEdges().get(m.getTitle()).getEnd().getTitle().equals(
+                                genresToMovies.get(genreName).getMoviesEdges().get(m.getTitle()).getEnd().getTitle()
+                        )){
+                            genresToMovies.get(genreName).getMoviesEdges().get(m.getTitle()).getEnd().setPopularity();
+                            System.out.println(genresToMovies.get(genreName).getMoviesEdges().get(m.getTitle()).getEnd().getPopularity());
+                        }
+                    }
+                }
+            }
+
         }
     }
+
+    public Queue<Movie> convertHashToQueue(HashMap<String, Movie> movies){
+        Queue<Movie> queue = new LinkedList<>();
+        for (Movie movie : movies.values()) {
+            queue.add(movie);
+        }
+        return queue;
+    }
+
 }
 

@@ -1,154 +1,93 @@
 import algorithms.HeapSort;
+import algorithms.MergeSort;
 import algorithms.Quicksort;
 import entities.vertices.Director;
 import entities.vertices.Genre;
 import entities.vertices.Movie;
 import user.User;
 import entities.Graph;
-
-import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Queue;
 import java.util.Scanner;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.Stack;
 
 public class Main {
 
     private static Scanner scanner = new Scanner(System.in);
     private static Graph graph = new Graph(true);
-    private static ArrayList<User> users = new ArrayList<>();
-    private static User currentUser;
-
 
     public static void main(String[] args) {
-        registerAndLoginMenu();
-        User currentUser = getCurrentUser();
+        Scanner scanner = new Scanner(System.in);
+        User currentUser = new User();
         loadMovies();
         loadDirectors();
         loadGenres();
-
-        if (currentUser != null) {
-            menu(scanner, graph, currentUser);
-        }
-    }
-
-    public static User getCurrentUser() {
-        return currentUser;
-    }
-
-    public static void registerAndLoginMenu() {
-        while (true) {
-            int option = registerAndLoginMenuOptions();
-            scanner.nextLine();
-
-            if (option == 1) {
-                User newUser = register();
-                if (newUser != null) {
-                    users.add(newUser);
-                    setCurrentUser(newUser);
-                    break;
-                }
-            } else if (option == 2) {
-                User existingUser = login();
-                if (existingUser != null) {
-                    setCurrentUser(existingUser);
-                    break;
-                }
-            } else if (option == 3) {
-                System.out.println("Saliendo del programa...");
-                break;
-            } else {
-                System.out.println("Opcion no existe, intente de nuevo.");
-            }
-        }
-    }
-
-    public static int registerAndLoginMenuOptions() {
-        System.out.println("::::::MoviesApp::::::");
-        System.out.println("1. Registrarse");
-        System.out.println("2. Iniciar sesion");
-        System.out.println("3. Salir");
-        System.out.print("Elija una opcion: ");
-
-        return scanner.nextInt();
-    }
-
-    public static User register() {
-        System.out.print("Ingrese su username: ");
-        String username = scanner.next();
-        System.out.print("Ingrese su contrasenia: ");
-        String password = scanner.next();
-
-        for (User user : users) {
-            if (user.getUsername().equals(username)) {
-                System.out.println("Usuario ya existente. Elija otro username.");
-                return null;
-            }
-        }
-
-        User newUser = new User(username, password);
-        System.out.println("Registration successful!");
-        return newUser;
-    }
-
-    public static User login() {
-        System.out.print("Ingrese su username: ");
-        String username = scanner.next();
-        System.out.print("Ingrese su contrasenia: ");
-        String password = scanner.next();
-
-        for (User user : users) {
-            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                System.out.println("Inicio exitoso!");
-                return user;
-            }
-        }
-
-        System.out.println("Usuario o contrasenia incorrectos. Por favor, intente de nuevo.");
-        return null;
-    }
-
-    public static void setCurrentUser(User user) {
-        currentUser = user;
+        menu(scanner, graph, currentUser);
     }
 
     public static void menu(Scanner scanner, Graph graph, User currentUser) {
         while (true) {
-            clearConsole();
             int option = menuOptions(scanner);
             scanner.nextLine();
 
             if (option == 1) {
                 subMenu(scanner, graph);
+
             } else if (option == 2) {
-                Movie m1 = new Movie("prueba1", "Drama", 1968, "David Fincher");
-                Movie m2 = new Movie("prueba2", "Horror", 1960, "Christopher Nolan");
-                Movie m3 = new Movie("prueba3", "Horror", 1978, "Martin Scorsese");
-                Movie m4 = new Movie("prueba4", "Crime", 1978, "David Fincher");
-
-                currentUser.addToWatchlist(m1);
-                currentUser.addToWatchlist(m2);
-                currentUser.addToWatchlist(m3);
-                currentUser.addToWatchlist(m4);
-
                 graph.recommender(currentUser.getWatchlist(), graph);
+                Queue<Movie> movies = graph.convertHashToQueue(graph.getMovies());
+                MergeSort.mergeSortMovieQueue(movies);
+                for (Movie m: movies){
+                    System.out.println(m.getString());
+                }
+
             } else if (option == 3) {
-                System.out.println("No yet..");
-                break;
+                Queue<Movie> watchlist = currentUser.getWatchlist();
+                while (!watchlist.isEmpty()) {
+                    Movie movie = watchlist.poll();
+                    System.out.println(movie.getString());
+                }
+
             } else if (option == 4) {
-                System.out.println("No yet...");
-                break;
+                System.out.println("Titulo: ");
+                String title = scanner.nextLine();
+                System.out.println("Genero: ");
+                String genre = scanner.nextLine();
+                System.out.println("Año: ");
+                int year = scanner.nextInt();
+                scanner.nextLine();
+                System.out.println("Director: ");
+                String director = scanner.nextLine();
+
+                Movie m = new Movie(title, genre, year, director);
+                currentUser.addToWatchlist(m);
+                System.out.println("Pelicula agregada!");
+
             } else if (option == 5) {
-                System.out.println("No yet...");
-                break;
+                Stack<Movie> favorites = currentUser.getFavoriteMovies();
+                while (!favorites.isEmpty()) {
+                    Movie movie = favorites.pop();
+                    System.out.println(movie.getString());
+                }
+
             } else if (option == 6) {
-                System.out.println("Exiting the system...");
-                break;
-            }else {
+                System.out.println("Titulo: ");
+                String title = scanner.nextLine();
+                System.out.println("Genero: ");
+                String genre = scanner.nextLine();
+                System.out.println("Año: ");
+                int year = scanner.nextInt();
+                scanner.nextLine();
+                System.out.println("Director: ");
+                String director = scanner.nextLine();
+
+                Movie m = new Movie(title, genre, year, director);
+                currentUser.addFavoriteMovie(m);
+            }else if (option == 7) {
+                System.out.println("Exiting...");
+            } else{
                 System.out.println("This option does not exist, try again.");
+                break;
             }
         }
     }
@@ -158,9 +97,10 @@ public class Main {
         System.out.println("1. Buscar por");
         System.out.println("2. Recomendador");
         System.out.println("3. Watchlist");
-        System.out.println("4. Views");
-        System.out.println("5. Favoritos");
-        System.out.println("6. Salir");
+        System.out.println("4. Agregar pelicula a watchlist");
+        System.out.println("5. Favoritas");
+        System.out.println("6. Agregar pelicula a favoritas");
+        System.out.println("7. Salir");
         System.out.print("Seleccione una opcion: ");
 
         return scanner.nextInt();
@@ -172,31 +112,31 @@ public class Main {
             scanner.nextLine();
 
             if (opt == 1) {
-                graph.printAllMovies();
-                waitForEnter(scanner);
+                System.out.println("Año: ");
+                int decade = scanner.nextInt();
+                ArrayList<Movie> movies = new ArrayList<>(graph.getMovies().values());
+                Quicksort.sortByYear(movies);
+                graph.printMoviesByDecade(movies, decade);
                 break;
             } else if (opt == 2) {
                 System.out.print("Genre: ");
                 String genre = scanner.nextLine();
                 graph.printMoviesByGenre(genre);
-                System.out.println("********************");
-                System.out.println(graph.getGenres().get("horror").getGenre() + " " + graph.getGenres().get("horror").getPopularity());
-
-                waitForEnter(scanner);
                 break;
             } else if (opt == 3) {
                 System.out.print("Director: ");
                 String director = scanner.nextLine();
                 graph.printMoviesByDirector(director);
-                waitForEnter(scanner);
                 break;
             } else if (opt == 4) {
-                System.out.print("No yet...");
-                waitForEnter(scanner);
+                ArrayList<Movie> arrayMovies = new ArrayList<>(graph.getMovies().values());
+                HeapSort.heapSortDescending(arrayMovies);
+                for (Movie movie : arrayMovies) {
+                    System.out.println(movie.getString());
+                }
                 break;
             } else {
                 System.out.println("This option does not exist, try again.");
-                waitForEnter(scanner);
             }
         }
     }
@@ -210,23 +150,6 @@ public class Main {
         System.out.print("Seleccione una opcion: ");
 
         return scanner.nextInt();
-    }
-
-    public static void clearConsole() {
-        try {
-            if (System.getProperty("os.name").contains("Windows")) {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            } else {
-                Runtime.getRuntime().exec("clear");
-            }
-        } catch (Exception e) {
-            // Manejo de excepciones
-        }
-    }
-
-    public static void waitForEnter(Scanner scanner) {
-        System.out.println("Press Enter to continue...");
-        scanner.nextLine();
     }
 
     private static void loadMovies(){

@@ -30,18 +30,18 @@ public class MergeSort {
 
     private static void merge(Queue<Movie> result, Queue<Movie> left, Queue<Movie> right) {
         while (!left.isEmpty() && !right.isEmpty()) {
-            if (left.peek().getPopularity() <= right.peek().getPopularity()) {
+            if (left.peek().getPopularity() >= right.peek().getPopularity()) {
                 result.offer(left.poll());
             } else {
                 result.offer(right.poll());
             }
         }
 
-        while (!left.isEmpty()) {
-            result.offer(left.poll());
-        }
         while (!right.isEmpty()) {
             result.offer(right.poll());
+        }
+        while (!left.isEmpty()) {
+            result.offer(left.poll());
         }
     }
 }
