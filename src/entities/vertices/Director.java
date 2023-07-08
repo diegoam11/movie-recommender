@@ -4,29 +4,31 @@ import entities.EdgeDirectorToMovie;
 //import entities.EdgeGenreToMovie;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Director {
     private String name;
-    private ArrayList<EdgeDirectorToMovie> moviesEdges;
+    private HashMap<String, EdgeDirectorToMovie> moviesEdges;
+    private int popularity;
 
     public Director(String name) {
-        this.name = name;
-        this.moviesEdges = new ArrayList<EdgeDirectorToMovie>();
+        this.name = name.toLowerCase();
+        this.moviesEdges = new HashMap<>();
     }
 
-    public void addMovieEdge(Movie endMovie) {
-        this.moviesEdges.add(new EdgeDirectorToMovie(this, endMovie));
+    public void addMovieEdge(String title, Movie endMovie) {
+        this.moviesEdges.put(title, new EdgeDirectorToMovie(this, endMovie));
     }
 
-    public void printMovies(){
-        for(EdgeDirectorToMovie e: this.moviesEdges) {
-            System.out.println(" -> " + e.getEnd().getTitle() + ": " + e.getEnd().getGenre() + " | " +
-            Integer.toString(e.getEnd().getYear()));
-        }
+    public HashMap<String, EdgeDirectorToMovie> getMoviesEdges() {
+        return moviesEdges;
     }
 
     public String getName() {
         return this.name;
     }
 
+    public void setPopularity() {
+        this.popularity += 1;
+    }
 }

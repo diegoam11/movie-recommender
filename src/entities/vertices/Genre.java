@@ -3,28 +3,32 @@ package entities.vertices;
 import entities.EdgeGenreToMovie;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Genre {
     private String genre;
-    private ArrayList<EdgeGenreToMovie> moviesEdges;
+    private HashMap<String, EdgeGenreToMovie> moviesEdges;
+    private int popularity;
 ;
     public Genre(String genre) {
-        this.genre = genre;
-        this.moviesEdges = new ArrayList<EdgeGenreToMovie>();
+        this.genre = genre.toLowerCase();
+        this.moviesEdges = new HashMap<>();
+        this.popularity = 0;
     }
 
-    public void addMovieEdge(Movie endMovie) {
-        this.moviesEdges.add(new EdgeGenreToMovie(this, endMovie));
+    public void addMovieEdge(String title ,Movie endMovie) {
+        this.moviesEdges.put(title, new EdgeGenreToMovie(this, endMovie));
     }
 
-    public void printMovies(){
-        for(EdgeGenreToMovie e: this.moviesEdges) {
-            System.out.println(" -> " + e.getEnd().getTitle() + ": " + e.getEnd().getGenre() + " | " +
-            Integer.toString(e.getEnd().getYear()) + " | " + e.getEnd().getDirector());
-        }
+    public HashMap<String, EdgeGenreToMovie> getMoviesEdges(){
+        return this.moviesEdges;
     }
 
     public String getGenre() {
         return this.genre;
+    }
+
+    public void setPopularity() {
+        this.popularity += 1;
     }
 }

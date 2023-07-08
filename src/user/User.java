@@ -38,5 +38,4 @@ public class User {
     public void addToWatchlist(Movie movie) {
         watchlist.offer(movie);
     }
-
 }

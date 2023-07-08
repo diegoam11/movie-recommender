@@ -3,7 +3,7 @@ import entities.vertices.Movie;
 
 import java.util.ArrayList;
 
-public class MovieSorter {
+public class Quicksort {
     public static void sortByYear(ArrayList<Movie> movies) {
         quicksort(movies, 0, movies.size() - 1);
     }

@@ -3,10 +3,15 @@ import entities.vertices.Genre;
 import entities.vertices.Movie;
 import user.User;
 import entities.Graph;
-import algorithms.MovieSorter;
+
+import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.HashMap;
 import java.util.Scanner;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Main {
 
@@ -15,74 +20,14 @@ public class Main {
     private static ArrayList<User> users = new ArrayList<>();
     private static User currentUser;
 
+
     public static void main(String[] args) {
-
-        //Users
-
-        User user1 = new User("RodrigoDV", "rodrigodv");
-        User user2 = new User("DiegoAM", "diegoam");
-        User user3 = new User("DiegoFG", "diegofg");
-        User user4 = new User("KevinTA", "kevinta");
-        User user5 = new User("MarianoVC", "marianovc");
-
-        users.add(user1);
-        users.add(user2);
-        users.add(user3);
-        users.add(user4);
-        users.add(user5);
-        
-        //Movies
-
-        Movie inception = graph.addMovie("Inception", "Science Fiction", 2010, "Christopher Nolan");
-        Movie darkKnight = graph.addMovie("The Dark Knight", "Action", 2008, "Christopher Nolan");
-        Movie interstellar = graph.addMovie("Interstellar", "Science Fiction", 2014, "Christopher Nolan");
-        Movie memento = graph.addMovie("Memento", "Thriller", 2000, "Christopher Nolan");
-        Movie dunkirk = graph.addMovie("Dunkirk", "War", 2017, "Christopher Nolan");
-        Movie prestige = graph.addMovie("The Prestige", "Mystery", 2006, "Christopher Nolan");
-        Movie batmanBegins = graph.addMovie("Batman Begins", "Action", 2005, "Christopher Nolan");
-
-
-        Movie seven = graph.addMovie("Seven", "Suspense", 1995, "David Fincher");
-        Movie fightClub = graph.addMovie("Fight Club", "Drama", 1999, "David Fincher");
-        Movie zodiac = graph.addMovie("Zodiac", "Crime", 2007, "David Fincher");
-        Movie goneGirl = graph.addMovie("Gone Girl", "Thriller", 2014, "David Fincher");
-        Movie theSocialNetwork = graph.addMovie("The Social Network", "Biography", 2010, "David Fincher");
-        Movie theGirlWithTheDragonTattoo = graph.addMovie("The Girl with the Dragon Tattoo", "Crime", 2011, "David Fincher");
-        Movie panicRoom = graph.addMovie("Panic Room", "Thriller", 2002, "David Fincher");
-
-        // Directores
-
-        Director davidFincher = graph.addDirector("David Fincher");
-        Director christopherNolan = graph.addDirector("Christopher Nolan");
-
-
-        //Generos
-        Genre scienceFiction = graph.addGenre("Science Fiction");
-        Genre action = graph.addGenre("Action");
-        Genre thriller = graph.addGenre("Thriller");
-        Genre war = graph.addGenre("War");
-        Genre mystery = graph.addGenre("Mystery");
-        Genre suspense = graph.addGenre("Suspense");
-        Genre biography = graph.addGenre("Biography");
-        Genre drama = graph.addGenre("Drama");
-        Genre crime = graph.addGenre("Crime");
-
-        //edges
-        graph.createEdgesByGenre(scienceFiction);
-        graph.createEdgesByGenre(action);
-        graph.createEdgesByGenre(thriller);
-        graph.createEdgesByGenre(war);
-        graph.createEdgesByGenre(mystery);
-        graph.createEdgesByGenre(suspense);
-        graph.createEdgesByGenre(biography);
-        graph.createEdgesByGenre(drama);
-        graph.createEdgesByGenre(crime);
-
-        graph.createEdgesByDirector(davidFincher);
-        graph.createEdgesByDirector(christopherNolan);
-        
         registerAndLoginMenu();
         User currentUser = getCurrentUser();
+        loadMovies();
+        loadDirectors();
+        loadGenres();
+
         if (currentUser != null) {
             menu(scanner, graph, currentUser);
         }
@@ -91,7 +36,6 @@ public class Main {
     public static User getCurrentUser() {
         return currentUser;
     }
-
 
     public static void registerAndLoginMenu() {
         while (true) {
@@ -178,7 +122,7 @@ public class Main {
             if (option == 1) {
                 subMenu(scanner, graph);
             } else if (option == 2) {
-                System.out.println("No yet...");
+
                 break;
             } else if (option == 3) {
                 System.out.println("No yet..");
@@ -217,33 +161,24 @@ public class Main {
             scanner.nextLine();
 
             if (opt == 1) {
+                /*
                 ArrayList<Movie> movies = graph.getMovies();
                 MovieSorter.sortByYear(movies);
                 for (Movie m: movies){
                     System.out.println(m.getString());
-                }
+                }*/
                 waitForEnter(scanner);
                 break;
             } else if (opt == 2) {
-                System.out.print("Ingrese un genero: ");
+                System.out.print("Genre: ");
                 String genre = scanner.nextLine();
-                ArrayList<Genre> genres = graph.getGenres();
-                for (Genre g: genres){
-                    if (Objects.equals(g.getGenre().toLowerCase(), genre.toLowerCase())){
-                        g.printMovies();
-                    }
-                }
+                graph.printMoviesByGenre(genre);
                 waitForEnter(scanner);
                 break;
             } else if (opt == 3) {
-                System.out.print("Ingrese el nombre de un director: ");
+                System.out.print("Director: ");
                 String director = scanner.nextLine();
-                ArrayList<Director> directors = graph.getDirectors();
-                for (Director d: directors){
-                    if (Objects.equals(d.getName().toLowerCase(), director.toLowerCase())){
-                        d.printMovies();
-                    }
-                }
+                graph.printMoviesByDirector(director);
                 waitForEnter(scanner);
                 break;
             } else if (opt == 4) {
@@ -284,5 +219,101 @@ public class Main {
         System.out.println("Press Enter to continue...");
         scanner.nextLine();
     }
+    public static void saveMovies(HashMap<String, Movie> movies){
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String json = gson.toJson(movies);
+        try (FileWriter fileWriter = new FileWriter("src/persistance/movies.json")) {
+            fileWriter.write(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    private static String leerJson() {
+        try (FileReader reader = new FileReader("src/persistance/movies.json")) {
+            StringBuilder content = new StringBuilder();
+            int caracter;
+            while ((caracter = reader.read()) != -1) {
+                content.append((char) caracter);
+            }
+            return content.toString();
+        } catch (IOException e) {
+            System.out.println("Error");
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    private static void loadMovies(){
+        graph.addMovie("Inception", "Science Fiction", 2010, "Christopher Nolan");
+        graph.addMovie("The Dark Knight", "Action", 2008, "Christopher Nolan");
+        graph.addMovie("Interstellar", "Science Fiction", 2014, "Christopher Nolan");
+        graph.addMovie("Memento", "Thriller", 2000, "Christopher Nolan");
+        graph.addMovie("Dunkirk", "War", 2017, "Christopher Nolan");
+        graph.addMovie("The Prestige", "Mystery", 2006, "Christopher Nolan");
+        graph.addMovie("Batman Begins", "Action", 2005, "Christopher Nolan");
+
+        graph.addMovie("Seven", "Suspense", 1995, "David Fincher");
+        graph.addMovie("Fight Club", "Drama", 1999, "David Fincher");
+        graph.addMovie("Zodiac", "Crime", 2007, "David Fincher");
+        graph.addMovie("Gone Girl", "Thriller", 2014, "David Fincher");
+        graph.addMovie("The Social Network", "Biography", 2010, "David Fincher");
+        graph.addMovie("The Girl with the Dragon Tattoo", "Crime", 2011, "David Fincher");
+        graph.addMovie("Panic Room", "Thriller", 2002, "David Fincher");
+
+        graph.addMovie("2001: A Space Odyssey", "Science Fiction", 1968, "Stanley Kubrick");
+        graph.addMovie("A Clockwork Orange", "Drama", 1971, "Stanley Kubrick");
+        graph.addMovie("The Shining", "Horror", 1980, "Stanley Kubrick");
+        graph.addMovie("Full Metal Jacket", "War", 1987, "Stanley Kubrick");
+        graph.addMovie("Eyes Wide Shut", "Drama", 1999, "Stanley Kubrick");
+        graph.addMovie("Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb", "Comedy", 1964, "Stanley Kubrick");
+        graph.addMovie("Barry Lyndon", "Drama", 1975, "Stanley Kubrick");
+        graph.addMovie("Paths of Glory", "War", 1957, "Stanley Kubrick");
+
+        graph.addMovie("Taxi Driver", "Drama", 1976, "Martin Scorsese");
+        graph.addMovie("Goodfellas", "Crime", 1990, "Martin Scorsese");
+        graph.addMovie("Raging Bull", "Biography", 1980, "Martin Scorsese");
+        graph.addMovie("Casino", "Crime", 1995, "Martin Scorsese");
+        graph.addMovie("The Departed", "Crime", 2006, "Martin Scorsese");
+        graph.addMovie("Shutter Island", "Mystery", 2010, "Martin Scorsese");
+        graph.addMovie("The Wolf of Wall Street", "Biography", 2013, "Martin Scorsese");
+        graph.addMovie("Gangs of New York", "Drama", 2002, "Martin Scorsese");
+    }
+
+    public static void loadDirectors(){
+        Director davidFincher = graph.addDirector("David Fincher");
+        Director christopherNolan = graph.addDirector("Christopher Nolan");
+        Director stanleyKubrick = graph.addDirector("Stanley Kubrick");
+        Director martinScorsese = graph.addDirector("Martin Scorsese");
+        graph.createEdgesDirectorToMovie(davidFincher);
+        graph.createEdgesDirectorToMovie(christopherNolan);
+        graph.createEdgesDirectorToMovie(martinScorsese);
+        graph.createEdgesDirectorToMovie(stanleyKubrick);
+    }
+
+    public static void loadGenres(){
+        Genre scienceFiction = graph.addGenre("Science Fiction");
+        Genre action = graph.addGenre("Action");
+        Genre thriller = graph.addGenre("Thriller");
+        Genre war = graph.addGenre("War");
+        Genre mystery = graph.addGenre("Mystery");
+        Genre suspense = graph.addGenre("Suspense");
+        Genre biography = graph.addGenre("Biography");
+        Genre drama = graph.addGenre("Drama");
+        Genre crime = graph.addGenre("Crime");
+        Genre comedy = graph.addGenre("Comedy");
+        Genre horror = graph.addGenre("Horror");
+
+        graph.createEdgesGenreToMovie(scienceFiction);
+        graph.createEdgesGenreToMovie(action);
+        graph.createEdgesGenreToMovie(thriller);
+        graph.createEdgesGenreToMovie(war);
+        graph.createEdgesGenreToMovie(mystery);
+        graph.createEdgesGenreToMovie(suspense);
+        graph.createEdgesGenreToMovie(biography);
+        graph.createEdgesGenreToMovie(drama);
+        graph.createEdgesGenreToMovie(crime);
+        graph.createEdgesGenreToMovie(comedy);
+        graph.createEdgesGenreToMovie(horror);
+    }
 }

@@ -15,9 +15,6 @@ public class EdgeGenreToMovie {
     public Genre getStart() {
         return this.start;
     }
-
-    public Movie getEnd() {
-        return this.end;
-    }
+    public Movie getEnd() { return this.end; }
 
 }

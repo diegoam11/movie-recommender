@@ -4,6 +4,7 @@ out/
 !**/src/test/**/out/
 .idea/
 movie.iml/
+Movie-Recommender.iml/
 ### Eclipse ###
 .apt_generated
 .classpath
