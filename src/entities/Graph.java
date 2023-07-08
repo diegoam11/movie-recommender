@@ -140,7 +140,6 @@ public class Graph {
                                 genresToMovies.get(genreName).getMoviesEdges().get(m.getTitle()).getEnd().getTitle()
                         )){
                             genresToMovies.get(genreName).getMoviesEdges().get(m.getTitle()).getEnd().setPopularity();
-                            System.out.println(genresToMovies.get(genreName).getMoviesEdges().get(m.getTitle()).getEnd().getPopularity());
                         }
                     }
                 }

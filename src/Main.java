@@ -43,31 +43,35 @@ public class Main {
 
             } else if (option == 3) {
                 Queue<Movie> watchlist = currentUser.getWatchlist();
-                while (!watchlist.isEmpty()) {
-                    Movie movie = watchlist.poll();
-                    System.out.println(movie.getString());
+                for(Movie m: watchlist) {
+                    System.out.println(m.getString());
                 }
 
             } else if (option == 4) {
-                System.out.println("Titulo: ");
-                String title = scanner.nextLine();
-                System.out.println("Genero: ");
-                String genre = scanner.nextLine();
-                System.out.println("Año: ");
-                int year = scanner.nextInt();
-                scanner.nextLine();
-                System.out.println("Director: ");
-                String director = scanner.nextLine();
+                int rpta;
+                do {
+                    System.out.print("Titulo: ");
+                    String title = scanner.nextLine();
+                    System.out.print("Genero: ");
+                    String genre = scanner.nextLine();
+                    System.out.print("Año: ");
+                    int year = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.print("Director: ");
+                    String director = scanner.nextLine();
 
-                Movie m = new Movie(title, genre, year, director);
-                currentUser.addToWatchlist(m);
-                System.out.println("Pelicula agregada!");
+                    Movie m = new Movie(title, genre, year, director);
+                    currentUser.addToWatchlist(m);
+                    System.out.println("Pelicula agregada!");
+                    System.out.print("¿Desea agregar otra pelicula?(sí:1 | no:0): " );
+                    rpta = scanner.nextInt();
+                    scanner.nextLine();
+                }while(rpta != 0);
 
             } else if (option == 5) {
                 Stack<Movie> favorites = currentUser.getFavoriteMovies();
-                while (!favorites.isEmpty()) {
-                    Movie movie = favorites.pop();
-                    System.out.println(movie.getString());
+                for(Movie m: favorites){
+                    System.out.println(m.getString());
                 }
 
             } else if (option == 6) {
@@ -85,9 +89,9 @@ public class Main {
                 currentUser.addFavoriteMovie(m);
             }else if (option == 7) {
                 System.out.println("Exiting...");
+                break;
             } else{
                 System.out.println("This option does not exist, try again.");
-                break;
             }
         }
     }
