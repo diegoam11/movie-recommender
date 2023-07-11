@@ -15,7 +15,6 @@ public class Main {
 
     private static Scanner scanner = new Scanner(System.in);
     private static Graph graph = new Graph(true);
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         User currentUser = new User();
@@ -122,16 +121,19 @@ public class Main {
                 Quicksort.sortByYear(movies);
                 graph.printMoviesByDecade(movies, decade);
                 break;
+
             } else if (opt == 2) {
                 System.out.print("Genre: ");
                 String genre = scanner.nextLine();
-                graph.printMoviesByGenre(genre);
+                graph.printMoviesByGenre(genre.toLowerCase());
                 break;
+
             } else if (opt == 3) {
                 System.out.print("Director: ");
                 String director = scanner.nextLine();
-                graph.printMoviesByDirector(director);
+                graph.printMoviesByDirector(director.toLowerCase());
                 break;
+
             } else if (opt == 4) {
                 ArrayList<Movie> arrayMovies = new ArrayList<>(graph.getMovies().values());
                 HeapSort.heapSortDescending(arrayMovies);
@@ -139,8 +141,10 @@ public class Main {
                     System.out.println(movie.getString());
                 }
                 break;
+
             } else {
                 System.out.println("This option does not exist, try again.");
+
             }
         }
     }

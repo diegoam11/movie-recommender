@@ -23,6 +23,23 @@ public class Graph {
         this.isDirected = inputIsDirected;
     }
 
+    public HashMap<String, Movie> getMovies() {
+        return  movies;
+    }
+
+    public HashMap<String, Director> getDirectors() {
+        return  directors;
+    }
+
+    public HashMap<String, Genre> getGenres() {return  genres; }
+
+    private  Genre getGenreByKey(String genreName) {
+        return genres.get(genreName);
+    }
+    private Director getDirectorByKey(String directorName) {
+        return directors.get(directorName);
+    }
+
     public void addMovie(String title, String genre, int year, String director) {
         Movie movie = new Movie(title, genre, year, director);
         movies.put(movie.getTitle(), movie);
@@ -36,7 +53,7 @@ public class Graph {
 
     public Genre addGenre(String genreName) {
         Genre genre = new Genre(genreName);
-        genres.put(genre.getGenre(), genre);
+        genres.put(genre.getGenreName(), genre);
         return genre;
     }
 
@@ -47,49 +64,10 @@ public class Graph {
     public void addEdgeDirector(Director startDirector, Movie endMovie) {
         startDirector.addMovieEdge(endMovie.getTitle(), endMovie);
     }
-    public HashMap<String, Movie> getMovies() {
-        return  movies;
-    }
-
-    public HashMap<String, Director> getDirectors() {
-        return  directors;
-    }
-
-    public HashMap<String, Genre> getGenres() {return  genres; }
-
-    private  Genre getGenre(String genreName) {
-        return genres.get(genreName);
-    }
-    private Director getDirector(String directorName) {
-        return directors.get(directorName);
-    }
-
-    public void printMoviesByGenre(String genreName) {
-        Genre genre = getGenre(genreName);
-        for(EdgeGenreToMovie e: genre.getMoviesEdges().values()){
-            System.out.println(" -> " + e.getEnd().getTitle() + ": " + e.getEnd().getGenre() + " | " +
-                    e.getEnd().getYear() + " | " + e.getEnd().getDirector() + " | " + e.getEnd().getPopularity());
-        }
-    }
-    public void printMoviesByDirector(String directorName) {
-        Director director = getDirector(directorName);
-        for(EdgeDirectorToMovie e: director.getMoviesEdges().values()){
-            System.out.println(" -> " + e.getEnd().getTitle() + ": " + e.getEnd().getGenre() + " | " +
-                    e.getEnd().getYear() + " | " + e.getEnd().getDirector()  + " | "+ e.getEnd().getPopularity());
-        }
-    }
-
-    public void printAllMovies() {
-        for (HashMap.Entry<String, Movie> entry : this.movies.entrySet()) {
-            String key = entry.getKey();
-            Movie movie = entry.getValue();
-            System.out.println(key + ": " + movie.getString());
-        }
-    }
 
     public void createEdgesGenreToMovie(Genre genre) {
         for (Movie m : movies.values()) {
-            if (m.getGenre().equalsIgnoreCase(genre.getGenre())) {
+            if (m.getGenre().equalsIgnoreCase(genre.getGenreName())) {
                 addEdgeGenre(genre, m);
             }
         }
@@ -100,6 +78,27 @@ public class Graph {
             if (movie.getDirector().equalsIgnoreCase(director.getName())) {
                 addEdgeDirector(director, movie);
             }
+        }
+    }
+
+    public void printMoviesByGenre(String genreName) {
+        Genre genre = getGenreByKey(genreName);
+        for(EdgeGenreToMovie e: genre.getMoviesEdges().values()){
+            System.out.println(e.getEnd().getString());
+        }
+    }
+    public void printMoviesByDirector(String directorName) {
+        Director director = getDirectorByKey(directorName);
+        for(EdgeDirectorToMovie e: director.getMoviesEdges().values()){
+            System.out.println(e.getEnd().getString());
+        }
+    }
+
+    public void printAllMovies() {
+        for (HashMap.Entry<String, Movie> entry : this.movies.entrySet()) {
+            String key = entry.getKey();
+            Movie movie = entry.getValue();
+            System.out.println(movie.getString());
         }
     }
 

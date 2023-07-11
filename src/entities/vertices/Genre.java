@@ -24,7 +24,7 @@ public class Genre {
         return this.moviesEdges;
     }
 
-    public String getGenre() {
+    public String getGenreName() {
         return this.genre;
     }
     public int getPopularity() {
