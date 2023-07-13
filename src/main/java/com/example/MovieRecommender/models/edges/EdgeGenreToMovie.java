@@ -1,7 +1,7 @@
-package entities;
+package com.example.MovieRecommender.models.edges;
 
-import entities.vertices.Genre;
-import entities.vertices.Movie;
+import com.example.MovieRecommender.models.Genre;
+import com.example.MovieRecommender.models.Movie;
 
 public class EdgeGenreToMovie {
     private Genre start;

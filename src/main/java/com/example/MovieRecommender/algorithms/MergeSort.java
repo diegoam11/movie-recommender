@@ -1,5 +1,7 @@
-package algorithms;
-import entities.vertices.Movie;
+package com.example.MovieRecommender.algorithms;
+
+import com.example.MovieRecommender.models.Movie;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -45,3 +47,4 @@ public class MergeSort {
         }
     }
 }
+

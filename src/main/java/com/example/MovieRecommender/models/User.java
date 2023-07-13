@@ -1,15 +1,13 @@
-package user;
+package com.example.MovieRecommender.models;
 
-import entities.vertices.Movie;
-
-import java.util.Stack;
-import java.util.Queue;
 import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
 
 public class User {
     private Stack<Movie> favoriteMovies;
     private Queue<Movie> watchlist;
-    
+
     public User() {
         this.favoriteMovies = new Stack<>();
         this.watchlist = new LinkedList<>();

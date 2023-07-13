@@ -1,5 +1,6 @@
-package algorithms;
-import entities.vertices.Movie;
+package com.example.MovieRecommender.algorithms;
+
+import com.example.MovieRecommender.models.Movie;
 
 import java.util.ArrayList;
 
@@ -38,4 +39,3 @@ public class Quicksort {
         return i + 1;
     }
 }
-

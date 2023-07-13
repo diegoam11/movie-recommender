@@ -1,7 +1,12 @@
-package entities.vertices;
-
+package com.example.MovieRecommender.models;
+import jakarta.persistence.*;
+@Entity
+@Table(name = "movie")
 public class Movie {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true, nullable = false)
+    private Long Id;
     private String title;
     private String genre;
     private int year;
@@ -12,6 +17,10 @@ public class Movie {
         this.genre = genre.toLowerCase();
         this.year = year;
         this.director = director.toLowerCase();
+    }
+
+    public Movie() {
+
     }
 
     public String getTitle() {
@@ -27,10 +36,36 @@ public class Movie {
         return this.director;
     }
     public int getPopularity() {return this.popularity;}
-    public void setPopularity() {
+    public void updatePopularity() {
         this.popularity += 1;
     }
+    public Long getId() {
+        return Id;
+    }
 
+    public void setId(Long id) {
+        Id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public void setDirector(String director) {
+        this.director = director;
+    }
+
+    public void setPopularity(int popularity) {
+        this.popularity = popularity;
+    }
     public String getString(){
         return "-> " + this.title + ": " + this.genre + " | " + Integer.toString(this.year) + " | " + this.director + " | " + this.popularity;
     }

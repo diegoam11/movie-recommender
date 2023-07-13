@@ -1,8 +1,8 @@
-package entities;
+package com.example.MovieRecommender.models.graph;
 
-import entities.vertices.Movie;
-import entities.vertices.Director;
-import entities.vertices.Genre;
+import com.example.MovieRecommender.models.Director;
+import com.example.MovieRecommender.models.Genre;
+import com.example.MovieRecommender.models.Movie;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,8 +40,7 @@ public class Graph {
         return directors.get(directorName);
     }
 
-    public void addMovie(String title, String genre, int year, String director) {
-        Movie movie = new Movie(title, genre, year, director);
+    public void addMovie(Movie movie) {
         movies.put(movie.getTitle(), movie);
     }
 
@@ -53,7 +52,7 @@ public class Graph {
 
     public Genre addGenre(String genreName) {
         Genre genre = new Genre(genreName);
-        genres.put(genre.getGenreName(), genre);
+        genres.put(genre.getGenre(), genre);
         return genre;
     }
 
@@ -67,7 +66,7 @@ public class Graph {
 
     public void createEdgesGenreToMovie(Genre genre) {
         for (Movie m : movies.values()) {
-            if (m.getGenre().equalsIgnoreCase(genre.getGenreName())) {
+            if (m.getGenre().equalsIgnoreCase(genre.getGenre())) {
                 addEdgeGenre(genre, m);
             }
         }
@@ -83,13 +82,13 @@ public class Graph {
 
     public void printMoviesByGenre(String genreName) {
         Genre genre = getGenreByKey(genreName);
-        for(EdgeGenreToMovie e: genre.getMoviesEdges().values()){
+        for(var e: genre.getMoviesEdges().values()){
             System.out.println(e.getEnd().getString());
         }
     }
     public void printMoviesByDirector(String directorName) {
         Director director = getDirectorByKey(directorName);
-        for(EdgeDirectorToMovie e: director.getMoviesEdges().values()){
+        for(var e: director.getMoviesEdges().values()){
             System.out.println(e.getEnd().getString());
         }
     }
@@ -122,13 +121,13 @@ public class Graph {
             HashMap<String, Genre> genresToMovies = graph.getGenres();
             HashMap<String, Director> directorsToMovies = graph.getDirectors();
 
-            if(genresToMovies.get(genreName) != null){
-                genresToMovies.get(genreName).setPopularity();
+           /* if(genresToMovies.get(genreName) != null){
+                genresToMovies.get(genreName).updatePopularity();
             }
 
             if(directorsToMovies.get(directorName) != null){
-                directorsToMovies.get(directorName).setPopularity();
-            }
+                directorsToMovies.get(directorName).updatePopularity();
+            }*/
 
             if(genresToMovies.get(genreName) != null && directorsToMovies.get(directorName) != null){
                 for (Movie m : movies.values()) {
@@ -138,7 +137,7 @@ public class Graph {
                         if (directorsToMovies.get(directorName).getMoviesEdges().get(m.getTitle()).getEnd().getTitle().equals(
                                 genresToMovies.get(genreName).getMoviesEdges().get(m.getTitle()).getEnd().getTitle()
                         )){
-                            genresToMovies.get(genreName).getMoviesEdges().get(m.getTitle()).getEnd().setPopularity();
+                            genresToMovies.get(genreName).getMoviesEdges().get(m.getTitle()).getEnd().updatePopularity();
                         }
                     }
                 }
@@ -153,6 +152,26 @@ public class Graph {
             queue.add(movie);
         }
         return queue;
+    }
+
+    public void addMoviesToGraph(ArrayList<Movie> movies){
+        for(var movie : movies){
+            addMovie(movie);
+        }
+    }
+
+    public void addDirectorsToGraph(ArrayList<Director> directors){
+        for(var director : directors){
+            var d = addDirector(director.getName());
+            createEdgesDirectorToMovie(d);
+        }
+    }
+
+    public void addGenresToGraph(ArrayList<Genre> genres){
+        for(var genre : genres){
+            var g = addGenre(genre.getGenre());
+            createEdgesGenreToMovie(g);
+        }
     }
 
 }

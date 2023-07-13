@@ -1,7 +1,7 @@
-package entities;
+package com.example.MovieRecommender.models.edges;
 
-import entities.vertices.Director;
-import entities.vertices.Movie;
+import com.example.MovieRecommender.models.Director;
+import com.example.MovieRecommender.models.Movie;
 
 public class EdgeDirectorToMovie {
     private Director start;
